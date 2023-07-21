@@ -62,7 +62,7 @@ const fetchProducts = async (categoryId: string | undefined) => {
         const products = response.data;
         return products;
     } catch (error) {
-        throw new Error('Error al obtener los productos');
+        <Error/>;
     }
 };
 
