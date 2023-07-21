@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query'; // Importamos useQuery desde react-query
+import { useQuery } from 'react-query'; 
 import Carga from '../../Components/Carga';
 import Error from '../../Components/Error';
 
@@ -19,10 +19,10 @@ const FiltroProducto: React.FC<FiltroProductoProps> = ({ onFiltrar }) => {
     const [categoriaId, setCategoriaId] = useState<number>(0);
     const [precio, setPrecio] = useState<number | null>(null);
 
-    // Usamos useQuery para realizar el fetching de las categorías
+
     const { data: categorias, isLoading, isError } = useQuery<Categoria[]>('categorias', fetchCategorias);
 
-    // Función para obtener las categorías desde el servidor
+
     async function fetchCategorias(): Promise<Categoria[]> {
         const response = await fetch('https://api.escuelajs.co/api/v1/categories');
         if (!response.ok) {

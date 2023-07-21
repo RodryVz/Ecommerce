@@ -32,7 +32,7 @@ const Productos = () => {
     const [filtradoCompleto, setFiltradoCompleto] = useState(false);
     const navigate = useNavigate();
 
-    // Función para obtener los productos con filtros aplicados
+
     const fetchProductos = async (title?: string, categoryId?: number, price?: number) => {
         let url = `https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`;
 
