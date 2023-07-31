@@ -2,7 +2,7 @@
 
 const Carga = () => {
     return (
-        <p>Cargando categorías...</p>
+        <p>Cargando...</p>
     )
 }
 
