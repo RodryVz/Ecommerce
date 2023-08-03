@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container">
                 <Link className="navbar-brand" to="/">
                     Inicio
@@ -36,20 +36,20 @@ const Navbar = () => {
                             </Link>
                         </li>
                     </ul>
-                </div>
-                <div className="navbar-collapse justify-content-end">
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/login">
-                                Iniciar sesión
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/register">
-                                Registrarse
-                            </Link>
-                        </li>
-                    </ul>
+                    <div className="navbar-collapse justify-content-end">
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/login">
+                                    Iniciar sesión
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/register">
+                                    Registrarse
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
