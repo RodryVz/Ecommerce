@@ -36,20 +36,20 @@ const Navbar = () => {
                             </Link>
                         </li>
                     </ul>
-                    <div className="navbar-collapse justify-content-end">
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/login">
-                                    Iniciar sesión
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/register">
-                                    Registrarse
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
+                </div>
+                <div className="navbar-collapse justify-content-end">
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/login">
+                                Iniciar sesión
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/register">
+                                Registrarse
+                            </Link>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
