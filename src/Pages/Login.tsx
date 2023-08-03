@@ -1,138 +1,134 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 
-const usuariosRegistrados = [
-
-    {
-        correo: 'usuario1@example.com',
-        contrasena: 'contrasena1',
-        nombre: 'Usuario1',
-    },
-    {
-        correo: 'usuario2@example.com',
-        contrasena: 'contrasena2',
-        nombre: 'Usuario2',
-    },
-];
+interface FormData {
+    email: string;
+    password: string;
+}
 
 const Login = () => {
-    const [formData, setFormData] = useState({
-        correo: '',
-        contrasena: '',
+    const [formData, setFormData] = useState<FormData>({
+        email: '',
+        password: '',
     });
 
-    const handleChange = (e: { target: { name: any; value: any; }; }) => {
-        setFormData({
-            ...formData,
+    const [successMessage, setSuccessMessage] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const queryClient = useQueryClient();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData((prevData) => ({
+            ...prevData,
             [e.target.name]: e.target.value,
-        });
+        }));
     };
 
-    const navigate = useNavigate();
-
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-
-        try {
-            if (!formData.correo || !formData.contrasena) {
-                alert('Por favor, complete todos los campos.');
-                return;
-            }
-
-
-            const usuarioValido = usuariosRegistrados.find(
-                (user) =>
-                    user.correo === formData.correo && user.contrasena === formData.contrasena
-            );
-
-            if (usuarioValido) {
-
-                localStorage.setItem('userData', JSON.stringify(usuarioValido));
-
-                alert('¡Inicio de sesión exitoso!');
-                setFormData({
-                    correo: '',
-                    contrasena: '',
+    const loginMutation = useMutation(
+        async () => {
+            try {
+                const response = await fetch('https://api.escuelajs.co/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
                 });
 
+                const data = await response.json();
 
-                navigate('/');
-            } else {
-                alert('Credenciales inválidas. Por favor, verifica tu correo y contraseña.');
+                if (response.ok) {
+                    setSuccessMessage('Inicio de sesión exitoso.');
+                    setErrorMessage('');
+                    localStorage.setItem('userToken', data.access_token);
+                } else {
+                    setErrorMessage('Credenciales inválidas. Por favor, verifica tu email y contraseña.');
+                    setSuccessMessage('');
+                    localStorage.removeItem('userToken');
+                }
+            } catch (error) {
+                setErrorMessage('Ocurrió un error al iniciar sesión. Por favor, inténtalo nuevamente.');
+                setSuccessMessage('');
+                localStorage.removeItem('userToken');
             }
-        } catch (error) {
-            alert('Ocurrió un error al enviar la solicitud de inicio de sesión.');
-            console.error(error);
+        },
+        {
+            onSuccess: () => {
+                setFormData({
+                    email: '',
+                    password: '',
+                });
+                queryClient.invalidateQueries('userProfile');
+            },
         }
+    );
+
+    const handleLogout = () => {
+        localStorage.removeItem('userToken');
+        setSuccessMessage('');
     };
 
-    const userDataString = localStorage.getItem('userData');
-    const usuarioIniciadoSesion = userDataString ? JSON.parse(userDataString) : null;
+    useEffect(() => {
+        // Verificar si hay un token almacenado en el Local Storage al cargar el componente
+        const userToken = localStorage.getItem('userToken');
+        if (userToken) {
+            setSuccessMessage('Sesión iniciada.');
+        }
+    }, []);
 
-    const handleCerrarSesion = () => {
-        localStorage.removeItem('userData');
-        navigate('/login');
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        loginMutation.mutate();
     };
-
-    if (usuarioIniciadoSesion) {
-        return (
-            <div className="container mt-4">
-                <div className="alert alert-success">
-                    <p>Bienvenido, {usuarioIniciadoSesion.nombre}.</p>
-                    <button className="btn btn-primary" onClick={handleCerrarSesion}>
-                        Cerrar Sesión
-                    </button>
-                </div>
-            </div>
-        );
-    }
 
     return (
-        <div className="container mt-4" >
+        <div className="container mt-4">
             <div className="row justify-content-center">
                 <div className="col-lg-5 col-md-7">
                     <div className="card border">
                         <div className="card-header">
-                            <h3 className="pt-3 font-weight-bold">Login</h3>
+                            <h3 className="pt-3 font-weight-bold">Iniciar Sesión</h3>
                         </div>
                         <div className="card-body p-3">
-                            <form onSubmit={handleSubmit}>
-                                <div className="form-group py-2">
-                                    <div className="input-group">
-                                        <span className="input-group-text far fa-user p-2"></span>
-                                        <input
-                                            type="text"
-                                            placeholder="Ingrese su Email"
-                                            required
-                                            name="correo"
-                                            value={formData.correo}
-                                            onChange={handleChange}
-                                            className="form-control"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group py-1 pb-2">
-                                    <div className="input-group">
-                                        <span className="input-group-text fas fa-lock px-2"></span>
-                                        <input
-                                            type="password"
-                                            placeholder="Ingrese su Contraseña"
-                                            required
-                                            name="contrasena"
-                                            value={formData.contrasena}
-                                            onChange={handleChange}
-                                            className="form-control"
-                                        />
-                                        <button className="btn bg-white text-muted">
-                                            <span className="far fa-eye-slash"></span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <button type="submit" className="btn btn-primary btn-block mt-3">
-                                    Login
+                            {errorMessage && <p className="text-danger">{errorMessage}</p>}
+                            {successMessage && <p className="text-success">{successMessage}</p>}
+                            {successMessage ? (
+                                <button onClick={handleLogout} className="btn btn-danger btn-block mt-3">
+                                    Cerrar Sesión
                                 </button>
-                            </form>
+                            ) : (
+                                <form onSubmit={handleSubmit}>
+                                    <div className="form-group py-2">
+                                        <div className="input-group">
+                                            <input
+                                                type="email"
+                                                placeholder="Ingresa tu correo electrónico"
+                                                required
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                className="form-control"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="form-group py-2">
+                                        <div className="input-group">
+                                            <input
+                                                type="password"
+                                                placeholder="Ingresa tu contraseña"
+                                                required
+                                                name="password"
+                                                value={formData.password}
+                                                onChange={handleChange}
+                                                className="form-control"
+                                            />
+                                        </div>
+                                    </div>
+                                    <button type="submit" className="btn btn-primary btn-block mt-3">
+                                        Iniciar Sesión
+                                    </button>
+                                </form>
+                            )}
                         </div>
                     </div>
                 </div>

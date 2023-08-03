@@ -33,7 +33,7 @@ const Categories = () => {
     };
 
     return (
-        <div className="container">
+        <div className="container mt-4">
             <h1 className="mb-4">Categorías disponibles</h1>
             <div className="row">
                 {categories?.map((category: Category) => (
