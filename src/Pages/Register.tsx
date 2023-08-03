@@ -1,100 +1,56 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
 
-const usuariosRegistrados = [
-
-    {
-        correo: 'usuario1@example.com',
-        contrasena: 'contrasena1',
-        nombre: 'Usuario1',
-    },
-    {
-        correo: 'usuario2@example.com',
-        contrasena: 'contrasena2',
-        nombre: 'Usuario2',
-    },
-
-];
+interface FormData {
+    name: string;
+    email: string;
+    password: string;
+    avatar: string;
+}
 
 const Register = () => {
-    const [formData, setFormData] = useState({
-        nombre: '',
-        correo: '',
-        contrasena: '',
+    const [formData, setFormData] = useState<FormData>({
+        name: '',
+        email: '',
+        password: '',
+        avatar: 'https://api.lorem.space/image/face?w=640&h=480&r=867',
     });
 
-    const handleChange = (e: { target: { name: string; value: any; }; }) => {
-        setFormData({
-            ...formData,
+    const [successMessage, setSuccessMessage] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData((prevData) => ({
+            ...prevData,
             [e.target.name]: e.target.value,
-        });
+        }));
     };
 
-    const navigate = useNavigate();
-
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-
-        try {
-            if (!formData.nombre || !formData.correo || !formData.contrasena) {
-                alert('Por favor, complete todos los campos.');
-                return;
-            }
-
-            const correoRegistrado = usuariosRegistrados.some(
-                (user) => user.correo === formData.correo
-            );
-
-            if (correoRegistrado) {
-                alert('Este correo electrónico ya está registrado. Por favor, usa otro.');
-                return;
-            }
-
-
-            const nuevoUsuario = {
-                nombre: formData.nombre,
-                correo: formData.correo,
-                contrasena: formData.contrasena,
-            };
-
-
-            localStorage.setItem('userData', JSON.stringify(nuevoUsuario));
-
-            alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
-            setFormData({
-                nombre: '',
-                correo: '',
-                contrasena: '',
-            });
-
-
-            navigate('/');
-        } catch (error) {
-            alert('Ocurrió un error al enviar la solicitud de registro.');
-            console.error(error);
+    const registerUserMutation = useMutation(
+        (userData: FormData) =>
+            fetch('https://api.escuelajs.co/api/v1/users/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            }).then((response) => response.json()),
+        {
+            onSuccess: (data) => {
+                setSuccessMessage(`Usuario registrado correctamente. ID: ${data.id}`);
+                setErrorMessage('');
+            },
+            onError: (error) => {
+                setErrorMessage('Ocurrió un error al registrar el usuario. Por favor, inténtalo nuevamente.');
+                setSuccessMessage('');
+            },
         }
+    );
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        registerUserMutation.mutate(formData);
     };
-
-    const userDataString = localStorage.getItem('userData');
-    const usuarioIniciadoSesion = userDataString ? JSON.parse(userDataString) : null;
-
-    const handleCerrarSesion = () => {
-        localStorage.removeItem('userData');
-        navigate('/login');
-    };
-
-    if (usuarioIniciadoSesion) {
-        return (
-            <div className="container mt-4">
-                <div className="alert alert-success">
-                    <p>Bienvenido, {usuarioIniciadoSesion.nombre}.</p>
-                    <button className="btn btn-primary" onClick={handleCerrarSesion}>
-                        Cerrar Sesión
-                    </button>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="container mt-4">
@@ -105,6 +61,8 @@ const Register = () => {
                             <h3 className="pt-3 font-weight-bold">Registro</h3>
                         </div>
                         <div className="card-body p-3">
+                            {successMessage && <p className="text-success">{successMessage}</p>}
+                            {errorMessage && <p className="text-danger">{errorMessage}</p>}
                             <form onSubmit={handleSubmit}>
                                 <div className="form-group py-2">
                                     <div className="input-group">
@@ -112,8 +70,8 @@ const Register = () => {
                                             type="text"
                                             placeholder="Ingresa tu nombre"
                                             required
-                                            name="nombre"
-                                            value={formData.nombre}
+                                            name="name"
+                                            value={formData.name}
                                             onChange={handleChange}
                                             className="form-control"
                                         />
@@ -125,8 +83,8 @@ const Register = () => {
                                             type="email"
                                             placeholder="Ingresa tu correo electrónico"
                                             required
-                                            name="correo"
-                                            value={formData.correo}
+                                            name="email"
+                                            value={formData.email}
                                             onChange={handleChange}
                                             className="form-control"
                                         />
@@ -138,8 +96,8 @@ const Register = () => {
                                             type="password"
                                             placeholder="Ingresa tu contraseña"
                                             required
-                                            name="contrasena"
-                                            value={formData.contrasena}
+                                            name="password"
+                                            value={formData.password}
                                             onChange={handleChange}
                                             className="form-control"
                                         />
