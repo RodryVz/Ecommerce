@@ -6,6 +6,8 @@ import Carga from '../../Components/Carga';
 import { Carousel } from 'react-bootstrap';
 import FiltroProducto from './FiltroProducto';
 import { Link } from 'react-router-dom';
+import { useCarritoContext } from '../Carrito/CarritoContext';
+
 
 interface Producto {
     id: number;
@@ -16,6 +18,7 @@ interface Producto {
     };
     images: string[];
 }
+
 
 const cardImageStyle = {
     height: '200px',
@@ -32,7 +35,6 @@ const Productos = () => {
     const [filtradoCompleto, setFiltradoCompleto] = useState(false);
     const navigate = useNavigate();
 
-
     const fetchProductos = async (title?: string, categoryId?: number, price?: number) => {
         let url = `https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`;
 
@@ -48,11 +50,10 @@ const Productos = () => {
             url += `&price=${price}`;
         }
 
-
         const response = await fetch(url);
 
         if (!response.ok) {
-            <Error/>
+            <Error/>;
         }
 
         return response.json();
@@ -95,6 +96,33 @@ const Productos = () => {
         }
     };
 
+    
+    const { carrito, setCarrito } = useCarritoContext();
+
+    
+    const handleAgregarAlCarrito = (producto: Producto) => {
+        
+        const productoEnCarrito = carrito.find((p: { id: number }) => p.id === producto.id);
+
+        if (productoEnCarrito) {
+            const carritoActualizado = carrito.map((p: { id: number; cantidad: number }) =>
+                p.id === producto.id
+                    ? {
+                        ...p,
+                        cantidad: p.cantidad + 1,
+                        precioTotal: (p.cantidad + 1) * producto.price, // Actualiza el precio total del producto en el carrito
+                    }
+                    : p
+            );
+            setCarrito(carritoActualizado);
+        } else {
+            setCarrito([...carrito, { ...producto, cantidad: 1, precioTotal: producto.price }]);
+        }
+
+        
+        alert('¡Producto agregado al carrito!');
+    };
+
     if (isLoading) return <Carga />;
 
     if (isError || productos === undefined) return <Error />;
@@ -121,6 +149,9 @@ const Productos = () => {
                                     <p className="card-text">
                                         <b>Precio:</b> ${producto.price}
                                     </p>
+                                    <button onClick={() => handleAgregarAlCarrito(producto)} className="btn btn-primary">
+                                        Agregar al carrito
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -135,7 +166,7 @@ const Productos = () => {
                     <button onClick={handleNextPage} className="btn btn-primary" disabled={productos && productos.length < limit}>
                         Página Siguiente
                     </button>
-                    <Link to="/" className="btn btn-warning"  style={{ marginLeft: '10px' }}>
+                    <Link to="/" className="btn btn-warning" style={{ marginLeft: '10px' }}>
                         Volver a inicio
                     </Link>
                 </div>
