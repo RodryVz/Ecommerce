@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
 
-// Interfaz para definir la estructura de un producto
+
 interface Producto {
     id: number;
     title: string;
@@ -56,7 +56,7 @@ const EdicionProducts = () => {
         },
         {
             onSuccess: () => {
-                setEditMode(false); // Salir del modo de edición después de la actualización
+                setEditMode(false);
             },
         }
     );
@@ -77,7 +77,7 @@ const EdicionProducts = () => {
         },
         {
             onSuccess: () => {
-                setProductoId(undefined); // Limpiar el ID del producto después de la eliminación
+                setProductoId(undefined); 
             },
         }
     );

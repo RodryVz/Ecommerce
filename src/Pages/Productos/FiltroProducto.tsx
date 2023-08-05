@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query'; 
+import { useQuery } from 'react-query';
 import Carga from '../../Components/Carga';
 import Error from '../../Components/Error';
 
@@ -10,8 +10,8 @@ interface Categoria {
 
 interface FiltroProductoProps {
     onFiltrar: (titulo: string,
-                categoriaId: number, 
-                precio: number) => void;
+        categoriaId: number,
+        precio: number) => void;
 }
 
 const FiltroProducto: React.FC<FiltroProductoProps> = ({ onFiltrar }) => {
@@ -26,7 +26,7 @@ const FiltroProducto: React.FC<FiltroProductoProps> = ({ onFiltrar }) => {
     async function fetchCategorias(): Promise<Categoria[]> {
         const response = await fetch('https://api.escuelajs.co/api/v1/categories');
         if (!response.ok) {
-            <Error/>;
+            <Error />;
         }
         return response.json();
     }
@@ -51,36 +51,47 @@ const FiltroProducto: React.FC<FiltroProductoProps> = ({ onFiltrar }) => {
         <div className="my-4">
             <h4>Filtrar Productos</h4>
             {isLoading ? (
-                <Carga/>
+                <Carga />
             ) : isError ? (
-                <Error/>
+                <Error />
             ) : (
                 <div className="input-group mb-3">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Buscar por título..."
-                        value={titulo}
-                        onChange={handleChangeTitulo}
-                    />
-                    <select className="form-select" onChange={handleChangeCategoria} value={categoriaId}>
-                        <option value={0}>Todas las categorías</option>
-                        {categorias?.map((categoria) => (
-                            <option key={categoria.id} value={categoria.id}>
-                                {categoria.name}
-                            </option>
-                        ))}
-                    </select>
-                    <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Ingrese un precio"
-                        value={precio === null ? '' : precio}
-                        onChange={handleChangePrecio}
-                    />
-                    <button className="btn btn-primary" onClick={handleFiltrar}>
-                        Filtrar
-                    </button>
+                    <div className="input-group mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Buscar por título..."
+                            value={titulo}
+                            onChange={handleChangeTitulo}
+                        />
+                    </div>
+
+                    <div className="input-group mb-3">
+                        <select className="form-select" onChange={handleChangeCategoria} value={categoriaId}>
+                            <option value={0}>Todas las categorías</option>
+                            {categorias?.map((categoria) => (
+                                <option key={categoria.id} value={categoria.id}>
+                                    {categoria.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="input-group mb-3">
+                        <input
+                            type="number"
+                            className="form-control"
+                            placeholder="Ingrese un precio"
+                            value={precio === null ? '' : precio}
+                            onChange={handleChangePrecio}
+                        />
+                    </div>
+
+                    <div className="input-group mb-3">
+                        <button className="btn btn-primary" onClick={handleFiltrar}>
+                            Filtrar
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 import Carga from '../../Components/Carga';
 
-// Interfaz para definir la estructura de una categoría
+
 interface Categoria {
     id: number;
     name: string;
@@ -17,7 +17,7 @@ const EditarCategoria = () => {
 
     const queryClient = useQueryClient();
 
-    // Función para obtener la categoría por su ID utilizando React Query
+
     const { data: categoria, isLoading } = useQuery<Categoria | null>(
         ['categoria', categoryId], // Clave única para la consulta
         async () => {
@@ -55,14 +55,13 @@ const EditarCategoria = () => {
         },
         {
             onSuccess: () => {
-                setEditMode(false); // Salir del modo de edición después de la actualización
-                // Actualizar la lista de categorías en el cache de React Query
+                setEditMode(false); 
                 queryClient.invalidateQueries('categories');
             },
         }
     );
 
-    // Función para manejar la eliminación de la categoría utilizando React Query
+    // Función para manejar la eliminación de la categoría
     const deleteCategoria = useMutation(
         async () => {
             if (categoryId) {
@@ -78,8 +77,8 @@ const EditarCategoria = () => {
         },
         {
             onSuccess: () => {
-                setCategoryId(undefined); // Limpiar el ID de la categoría después de la eliminación
-                // Actualizar la lista de categorías en el cache de React Query
+                setCategoryId(undefined); 
+                // Actualizar la lista de categorías en el cache
                 queryClient.invalidateQueries('categories');
             },
         }

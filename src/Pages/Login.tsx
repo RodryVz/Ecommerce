@@ -69,7 +69,7 @@ const Login = () => {
     };
 
     useEffect(() => {
-        // Verificar si hay un token almacenado en el Local Storage al cargar el componente
+
         const userToken = localStorage.getItem('userToken');
         if (userToken) {
             setSuccessMessage('Sesión iniciada.');

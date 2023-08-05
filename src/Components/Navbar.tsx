@@ -1,11 +1,20 @@
+
+import { faCartShopping, faGear, faHouseChimney } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
+
+
+
+
+
+
 
 const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container">
                 <Link className="navbar-brand" to="/">
-                    Inicio
+                <FontAwesomeIcon icon={faHouseChimney} />
                 </Link>
                 <button
                     className="navbar-toggler"
@@ -19,8 +28,8 @@ const Navbar = () => {
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav mr-auto">
-                        <li className="nav-item">
+                    <ul className="navbar-nav mr-auto ml-4">
+                        <li className="nav-item ml-3">
                             <Link className="nav-link" to="/productos">
                                 Productos
                             </Link>
@@ -32,29 +41,29 @@ const Navbar = () => {
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/detalleCarrito">
-                                Detalles del Carrito
+                            <FontAwesomeIcon icon={faCartShopping} />
                             </Link>
                         </li>
                     </ul>
-                </div>
-                <div className="navbar-collapse justify-content-end">
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/login">
-                                Iniciar sesión
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/register">
-                                Registrarse
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/administracion">
-                                Administracion
-                            </Link>
-                        </li>
-                    </ul>
+                    <div className="navbar-collapse justify-content-end">
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/login">
+                                Iniciar
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/register">
+                                Crear Cuenta
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/administracion">
+                                <FontAwesomeIcon icon={faGear} />
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>

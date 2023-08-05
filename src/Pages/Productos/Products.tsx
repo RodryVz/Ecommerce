@@ -110,7 +110,7 @@ const Productos = () => {
                     ? {
                         ...p,
                         cantidad: p.cantidad + 1,
-                        precioTotal: (p.cantidad + 1) * producto.price, // Actualiza el precio total del producto en el carrito
+                        precioTotal: (p.cantidad + 1) * producto.price, 
                     }
                     : p
             );

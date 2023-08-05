@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
 
-// Interfaz para definir la estructura completa de una categoría
+
 interface CategoriaCompleta {
-    id?: number; // El campo 'id' es opcional para la creación de una nueva categoría
+    id?: number; 
     name: string;
     image: string;
 }
@@ -19,7 +19,7 @@ const CrearCategoria = () => {
 
     const queryClient = useQueryClient();
 
-    // Función para manejar el envío del formulario usando React Query
+
     const mutation = useMutation(
         async (updatedCategory: CategoriaCompleta) => {
             const url = categoryId
@@ -47,7 +47,6 @@ const CrearCategoria = () => {
                 console.log('Categoría creada o actualizada:', data);
                 setSuccessMessage(categoryId ? '¡Categoría actualizada exitosamente!' : '¡Categoría creada exitosamente!');
                 setErrorMessage('');
-                // Limpiar los campos del formulario después de una respuesta exitosa
                 setCategoryId(null);
                 setName('');
                 setImage('');
@@ -81,7 +80,6 @@ const CrearCategoria = () => {
     return (
         <div className="container mt-4">
             <h2>{categoryId ? 'Editar Categoría' : 'Crear Categoría'}</h2>
-            {/* Mostrar el mensaje de éxito o error */}
             {successMessage && <p className="text-success">{successMessage}</p>}
             {errorMessage && <p className="text-danger">{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
